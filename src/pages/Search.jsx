@@ -24,55 +24,33 @@ const Search = () => {
   };
 
   const getresults = async (query, pageNo, isloadmore) => {
-    if (query) {
-      let api = `s=${query.title}`;
-
-      if (query.year) {
-        api += `&y=${query.year}`;
-      }
-
-      if (query.type) {
-        api += `&type=${query.type}`;
-      }
-      try {
-        await getSearchResults(api, pageNo).then((data) => {
-          if (isloadmore) {
-            setMovies((prevState) => ({
-              ...data,
-              Search: [...prevState.Search, ...data.Search],
-              currentPage: pageNo,
-            }));
-          } else {
+    try {
+      await getSearchResults(query, pageNo).then((data) => {
+        localStorage.setItem("searchTerm", query);
+        if (isloadmore) {
+          setMovies((prevState) => ({
+            ...data,
+            Search: [...prevState.Search, ...data.Search],
+            currentPage: pageNo,
+          }));
+        } else {
+          if (data?.Response) {
+            console.log(data.Response);
             setMovies(() => ({
               ...data,
               Search: [...data.Search],
               currentPage: pageNo,
             }));
-          }
-        });
-      } catch (error) {
-        console.error("Error fetching results:", error);
-      }
-    } else {
-      try {
-        await getSearchResults(query, pageNo).then((data) => {
-          if (isloadmore) {
-            setMovies((prevState) => ({
-              ...data,
-              Search: [...prevState.Search, ...data.Search],
-              currentPage: pageNo,
-            }));
           } else {
             setMovies(() => ({
-              ...data,
-              Search: [...data.Search],
-              currentPage: pageNo,
+              Search: [],
+              currentPage: 0,
             }));
           }
-        });
-      } catch {
-        console.error("Error fetching results:");
-      }
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching results:", error);
     }
   };
 
@@ -84,6 +62,12 @@ const Search = () => {
       getresults(isQuery, movies.currentPage + 1, "loadmore");
     }
   };
+
+  useEffect(() => {
+    let searchTerm = localStorage.getItem("searchTerm");
+    console.log(searchTerm);
+    getresults(searchTerm, 1);
+  }, []);
 
   return (
     <div className="mt-24 mx-4 md:mx-36">
@@ -163,10 +147,6 @@ const SearchForm = ({ getresults, formikRef }) => {
     );
   };
 
-  useEffect(() => {
-    getresults("", 1);
-  }, []);
-
   return (
     <Formik
       innerRef={formikRef}
@@ -179,7 +159,16 @@ const SearchForm = ({ getresults, formikRef }) => {
       validationSchema={validationSchema}
       onSubmit={(values) => {
         const filteredValues = removeEmptyFields(values);
-        getresults(filteredValues, 1);
+        let api = `s=${filteredValues.title}`;
+
+        if (filteredValues.year) {
+          api += `&y=${filteredValues.year}`;
+        }
+
+        if (filteredValues.type) {
+          api += `&type=${filteredValues.type}`;
+        }
+        getresults(api, 1);
       }}
     >
       {({ setFieldValue, resetForm }) => (

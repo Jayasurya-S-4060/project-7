@@ -6,6 +6,7 @@ import About from "./pages/About";
 import Navbar from "./components/Navbar";
 
 function App() {
+  localStorage.setItem("searchTerm", "s=naruto");
   return (
     <div className="bg-black text-white min-h-screen relative font-roboto">
       <Navbar />
