@@ -1,0 +1,76 @@
+.custom-placeholder input::placeholder {
+  color: white !important;
+}
+
+.custom-placeholder input:focus {
+  border-color: white !important;
+}
+
+.input-field-custom {
+  border: unset;
+  background: hsl(12, 6.5%, 15.1%);
+  color: rgba(255, 244, 244, 0.918);
+  padding: 10px;
+}
+
+.input-field-custom:hover {
+  background: hsl(12, 6.5%, 15.1%);
+  border: unset;
+  color: rgba(255, 244, 244, 0.918);
+}
+
+.input-field-custom::placeholder {
+  color: rgba(206, 201, 201, 0.589);
+}
+
+.input-field-custom:focus {
+  outline: inherit;
+  background: hsl(12, 6.5%, 15.1%);
+  color: rgba(255, 244, 244, 0.918);
+}
+
+.ant-select-dropdown::placeholder {
+  color: rgb(255, 255, 255) !important;
+}
+
+.ant-select-dropdown {
+  background: hsl(12, 6.5%, 15.1%) !important;
+  color: rgba(255, 244, 244, 0.918) !important;
+}
+
+.ant-select-selector {
+  border: 0px !important;
+  background: hsl(12, 6.5%, 15.1%) !important;
+  color: rgba(255, 244, 244, 0.918) !important;
+  outline: none !important;
+}
+
+.ant-select-item-option {
+  background: hsl(12, 6.5%, 18%) !important;
+  color: rgba(255, 244, 244, 0.918) !important;
+}
+
+.ant-select-item-option-selected {
+  background: hsl(12, 6.5%, 22%) !important;
+  color: rgba(255, 244, 244, 0.918) !important;
+}
+
+.ant-select-item-option-active {
+  background: hsl(12, 6.5%, 20%) !important;
+  color: rgba(255, 244, 244, 0.918) !important;
+}
+
+.ant-btn-primary {
+  background-color: hsl(12, 6.5%, 18%) !important;
+  color: rgba(255, 244, 244, 0.918) !important;
+  border: none !important;
+}
+
+.ant-btn-primary:hover {
+  background-color: hsl(12, 6.5%, 22%) !important;
+  color: rgba(255, 244, 244, 0.918) !important;
+}
+
+.ant-btn-primary:focus {
+  box-shadow: 0 0 0 2px rgba(255, 244, 244, 0.4) !important;
+}
