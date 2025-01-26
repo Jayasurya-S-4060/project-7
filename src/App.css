@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 .custom-placeholder input::placeholder {
   color: white !important;
 }
@@ -73,4 +77,62 @@
 
 .ant-btn-primary:focus {
   box-shadow: 0 0 0 2px rgba(255, 244, 244, 0.4) !important;
+}
+
+.ant-pagination {
+  color: rgba(255, 244, 244, 0.918) !important;
+}
+
+.ant-pagination-item {
+  background: hsl(12, 6.5%, 15.1%) !important;
+  border: 1px solid hsl(12, 6.5%, 18%) !important;
+  color: rgba(255, 244, 244, 0.918) !important;
+}
+.ant-pagination-item-active {
+  background: hsl(12, 6.5%, 22%) !important;
+  border-color: hsl(12, 6.5%, 22%) !important;
+  color: rgba(255, 244, 244, 0.918) !important;
+}
+
+.ant-pagination-item:hover {
+  background: hsl(12, 6.5%, 18%) !important;
+  border-color: hsl(12, 6.5%, 18%) !important;
+  color: rgba(255, 244, 244, 0.918) !important;
+}
+
+.ant-pagination-next,
+.ant-pagination-prev {
+  background: hsl(12, 6.5%, 15.1%) !important;
+  color: rgba(255, 244, 244, 0.918) !important;
+  border: none !important;
+}
+
+.ant-pagination-next:hover,
+.ant-pagination-prev:hover {
+  background: hsl(12, 6.5%, 18%) !important;
+  color: rgba(255, 244, 244, 0.918) !important;
+}
+
+.ant-pagination-disabled,
+.ant-pagination-disabled a {
+  background: hsl(12, 6.5%, 15.1%) !important;
+  color: rgba(255, 244, 244, 0.918) !important;
+
+  border-color: hsl(12, 6.5%, 15.1%) !important;
+}
+
+.ant-pagination-item-ellipsis {
+  color: rgba(255, 244, 244, 0.918) !important;
+}
+
+.ant-pagination-item-active a {
+  color: rgba(255, 244, 244, 0.918) !important;
+}
+
+.ant-pagination-item a {
+  color: rgba(255, 244, 244, 0.918) !important;
+}
+
+.ant-pagination-item-link {
+  color: rgba(255, 244, 244, 0.918) !important;
 }

@@ -1,118 +1,97 @@
 import { Input, Select, Button } from "antd";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useEffect, useMemo, useState } from "react";
-import * as Yup from "yup"; // For validation schema
+import { useEffect, useMemo, useRef, useState } from "react";
+import * as Yup from "yup";
 import { getSearchResults } from "../services/getSearchResults";
 import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
 const Search = () => {
+  const formikRef = useRef(null);
   const navigate = useNavigate();
   const [movies, setMovies] = useState({
     Search: [],
     totalResults: 0,
+    currentPage: 1,
   });
 
-  const defaultData = useMemo(
-    () => [
-      {
-        Title: "Avatar",
-        Year: "2009",
-        imdbID: "tt0499549",
-        Type: "movie",
-        Poster:
-          "https://m.media-amazon.com/images/M/MV5BMDEzMmQwZjctZWU2My00MWNlLWE0NjItMDJlYTRlNGJiZjcyXkEyXkFqcGc@._V1_SX300.jpg",
-      },
-      {
-        Title: "Avatar: The Way of Water",
-        Year: "2022",
-        imdbID: "tt1630029",
-        Type: "movie",
-        Poster:
-          "https://m.media-amazon.com/images/M/MV5BNmQxNjZlZTctMWJiMC00NGMxLWJjNTctNTFiNjA1Njk3ZDQ5XkEyXkFqcGc@._V1_SX300.jpg",
-      },
-      {
-        Title: "Avatar: The Last Airbender",
-        Year: "2005–2008",
-        imdbID: "tt0417299",
-        Type: "series",
-        Poster:
-          "https://m.media-amazon.com/images/M/MV5BMDMwMThjYWYtY2Q2OS00OGM2LTlkODQtNDJlZTZmMjAyYmFhXkEyXkFqcGc@._V1_SX300.jpg",
-      },
-      {
-        Title: "Avatar: The Last Airbender",
-        Year: "2024–",
-        imdbID: "tt9018736",
-        Type: "series",
-        Poster:
-          "https://m.media-amazon.com/images/M/MV5BZjQ1YTZmMjItZmZkMC00MGVmLTk1OTUtNzQzZTJjZGM1NjVlXkEyXkFqcGc@._V1_SX300.jpg",
-      },
-      {
-        Title: "The King's Avatar",
-        Year: "2019",
-        imdbID: "tt10732794",
-        Type: "series",
-        Poster:
-          "https://m.media-amazon.com/images/M/MV5BZTdmZWM1MDgtNGI3Ni00NjM0LTgwNjItYjgxMzc5YTIxNDE5XkEyXkFqcGc@._V1_SX300.jpg",
-      },
-      {
-        Title: "Dasham Avatar",
-        Year: "2023",
-        imdbID: "tt27561990",
-        Type: "movie",
-        Poster:
-          "https://m.media-amazon.com/images/M/MV5BYjZjNWE4NDItNTQzZi00YTNjLWEyOTctMjk1MWE5YzgzNmRiXkEyXkFqcGc@._V1_SX300.jpg",
-      },
-      {
-        Title: "The King's Avatar",
-        Year: "2017–",
-        imdbID: "tt6859260",
-        Type: "series",
-        Poster:
-          "https://m.media-amazon.com/images/M/MV5BZjljOTI1NzItNjhjOS00YWEyLWEwODktNmEyYWFhYzhjZDgwXkEyXkFqcGc@._V1_SX300.jpg",
-      },
-      {
-        Title: "Avatar: The Last Airbender - The Legend of Aang",
-        Year: "2006",
-        imdbID: "tt0959552",
-        Type: "game",
-        Poster:
-          "https://m.media-amazon.com/images/M/MV5BNjUwNzA5Nzc4N15BMl5BanBnXkFtZTgwNjM1ODY4MDE@._V1_SX300.jpg",
-      },
-      {
-        Title: "Avatar: The Game",
-        Year: "2009",
-        imdbID: "tt1517155",
-        Type: "game",
-        Poster:
-          "https://m.media-amazon.com/images/M/MV5BMTYxODI2OTI4MF5BMl5BanBnXkFtZTcwNjI1NzMwMw@@._V1_SX300.jpg",
-      },
-      {
-        Title: "Avatar: The Last Airbender - The Legend So Far",
-        Year: "2005",
-        imdbID: "tt1605838",
-        Type: "movie",
-        Poster:
-          "https://m.media-amazon.com/images/M/MV5BMTc0M2RmMTQtNGQ2Zi00ODkzLWJlMzUtYmQyYTBkNGQ2MDA3XkEyXkFqcGc@._V1_SX300.jpg",
-      },
-    ],
-    []
-  );
+  const evaMovies = movies?.Search;
+  const totalMovies = movies?.totalResults || 0;
 
   const goTo = (id) => {
-    navigate(`search/${id}`);
+    navigate(`/search/${id}`);
   };
 
-  const evaMovies = movies?.Search;
+  const getresults = async (query, pageNo, isloadmore) => {
+    if (query) {
+      let api = `s=${query.title}`;
+
+      if (query.year) {
+        api += `&y=${query.year}`;
+      }
+
+      if (query.type) {
+        api += `&type=${query.type}`;
+      }
+      try {
+        await getSearchResults(api, pageNo).then((data) => {
+          if (isloadmore) {
+            setMovies((prevState) => ({
+              ...data,
+              Search: [...prevState.Search, ...data.Search],
+              currentPage: pageNo,
+            }));
+          } else {
+            setMovies(() => ({
+              ...data,
+              Search: [...data.Search],
+              currentPage: pageNo,
+            }));
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching results:", error);
+      }
+    } else {
+      try {
+        await getSearchResults(query, pageNo).then((data) => {
+          if (isloadmore) {
+            setMovies((prevState) => ({
+              ...data,
+              Search: [...prevState.Search, ...data.Search],
+              currentPage: pageNo,
+            }));
+          } else {
+            setMovies(() => ({
+              ...data,
+              Search: [...data.Search],
+              currentPage: pageNo,
+            }));
+          }
+        });
+      } catch {
+        console.error("Error fetching results:");
+      }
+    }
+  };
+
+  const loadMoreMovies = () => {
+    if (formikRef.current) {
+      let isQuery = formikRef.current.values.title
+        ? formikRef.current.values
+        : "";
+      getresults(isQuery, movies.currentPage + 1, "loadmore");
+    }
+  };
 
   return (
-    <div className="mt-24 mx-4 md:mx-10">
-      <SearchForm movies={movies} setMovies={setMovies} />
+    <div className="mt-24 mx-4 md:mx-36">
+      <SearchForm formikRef={formikRef} getresults={getresults} />
 
-      {evaMovies ? (
-        <div className="mx-16  ">
-          <div className="bg-black min-h-screen py-10 ">
+      {evaMovies.length > 0 ? (
+        <div className="mx-16">
+          <div className="bg-black min-h-screen py-10">
             <h1 className="text-4xl font-bold text-center mb-8"></h1>
             <div className="container overflow-hidden px-4 mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-6">
               {evaMovies.map((movie, index) => (
@@ -124,18 +103,24 @@ const Search = () => {
                   <img
                     src={movie.Poster}
                     alt={movie.Title}
-                    className="w-full h-72 object-cover "
+                    className="w-full h-72 object-cover"
                   />
-                  <div className="grid mb-4">
-                    <h2 className="text-md font-semibold mb-2 truncate">
+                  <div className="grid mb-4 mt-2">
+                    <h2 className="text-md font-semibold mb-1 truncate">
                       {movie.Title}
                     </h2>
-                    <p className="text-gray-700 mb-1 capitalize">{`${movie.Type}.${movie.Year}`}</p>
-                    <p className="text-gray-700"></p>
+                    <p className="text-gray-700 mb-1 capitalize text-sm text-gray-300">{`${movie.Type}.${movie.Year}`}</p>
                   </div>
                 </div>
               ))}
             </div>
+            {movies.Search.length < totalMovies && (
+              <div className="text-center mt-6">
+                <Button type="primary" onClick={loadMoreMovies}>
+                  Load More
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       ) : (
@@ -145,7 +130,7 @@ const Search = () => {
   );
 };
 
-const SearchForm = ({ movies, setMovies }) => {
+const SearchForm = ({ getresults, formikRef }) => {
   const validationSchema = Yup.object({
     title: Yup.string()
       .required("Enter title to search")
@@ -178,39 +163,13 @@ const SearchForm = ({ movies, setMovies }) => {
     );
   };
 
-  const StoreData = async (api) => {
-    try {
-      await getSearchResults(api, 1).then((data) => {
-        setMovies(data);
-      });
-    } catch {
-      console.error("Error fetching results:");
-    }
-  };
-
-  const getresults = async (query) => {
-    let api = `s=${query.title}`;
-
-    if (query.year) {
-      api += `&y=${query.year}`;
-    }
-
-    if (query.type) {
-      api += `&type=${query.type}`;
-    }
-
-    try {
-      StoreData(api);
-    } catch (error) {
-      console.error("Error fetching results:", error);
-    }
-  };
-
   useEffect(() => {
-    StoreData("");
+    getresults("", 1);
   }, []);
+
   return (
     <Formik
+      innerRef={formikRef}
       initialValues={{
         title: "",
         year: "",
@@ -220,12 +179,12 @@ const SearchForm = ({ movies, setMovies }) => {
       validationSchema={validationSchema}
       onSubmit={(values) => {
         const filteredValues = removeEmptyFields(values);
-        getresults(filteredValues);
+        getresults(filteredValues, 1);
       }}
     >
       {({ setFieldValue, resetForm }) => (
         <Form>
-          <div className="grid mb-3 space-y-1 ">
+          <div className="grid mb-3 space-y-1">
             <label htmlFor="title">Search</label>
             <Field
               className="input-field-custom"

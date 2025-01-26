@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import getMovieById from "../services/getMovieById";
+import { BounceLoader } from "react-spinners";
 
 const About = () => {
   const { movieId } = useParams();
@@ -29,7 +30,9 @@ const About = () => {
 
   if (!movie) {
     return (
-      <div style={{ color: "white", textAlign: "center" }}>Loading...</div>
+      <div className="text-white text-center h-screen flex justify-center items-center">
+        <BounceLoader size={70} loading color="hsl(12, 6.5%, 22%)" />
+      </div>
     );
   }
 

@@ -9,13 +9,13 @@ const Navbar = () => {
   const navLinks = useMemo(
     () => [
       { name: "Home", href: "/" },
-      { name: "Movies", href: "/search" },
+      // { name: "Movies", href: "/search" },
     ],
     []
   );
 
   return (
-    <div className="flex justify-between px-8 py-6 absolute z-10 w-full mt-4">
+    <div className="flex justify-between px-8 py-6 absolute z-10 w-full pt-4 md:px-36">
       <div>
         <img src="/src/assets/imdb.svg" alt="" />
       </div>
