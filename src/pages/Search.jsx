@@ -10,6 +10,7 @@ const { Option } = Select;
 const Search = () => {
   const formikRef = useRef(null);
   const navigate = useNavigate();
+  const [isLoding, setIsLoding] = useState(false);
   const [movies, setMovies] = useState({
     Search: [],
     totalResults: 0,
@@ -35,7 +36,6 @@ const Search = () => {
           }));
         } else {
           if (data?.Response) {
-            console.log(data.Response);
             setMovies(() => ({
               ...data,
               Search: [...data.Search],
@@ -49,12 +49,15 @@ const Search = () => {
           }
         }
       });
+      setIsLoding(false);
     } catch (error) {
       console.error("Error fetching results:", error);
+      setIsLoding(false);
     }
   };
 
   const loadMoreMovies = () => {
+    setIsLoding(true);
     if (formikRef.current) {
       let isQuery = formikRef.current.values.title
         ? formikRef.current.values
@@ -65,12 +68,11 @@ const Search = () => {
 
   useEffect(() => {
     let searchTerm = localStorage.getItem("searchTerm");
-    console.log(searchTerm);
     getresults(searchTerm, 1);
   }, []);
 
   return (
-    <div className="mt-24 mx-4 md:mx-36">
+    <div className="mt-16 mx-4 md:mx-36">
       <SearchForm formikRef={formikRef} getresults={getresults} />
 
       {evaMovies.length > 0 ? (
@@ -100,7 +102,11 @@ const Search = () => {
             </div>
             {movies.Search.length < totalMovies && (
               <div className="text-center mt-6">
-                <Button type="primary" onClick={loadMoreMovies}>
+                <Button
+                  type="primary"
+                  onClick={loadMoreMovies}
+                  disabled={isLoding}
+                >
                   Load More
                 </Button>
               </div>

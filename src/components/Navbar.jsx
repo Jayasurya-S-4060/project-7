@@ -4,8 +4,6 @@ import React, { useMemo } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const navigate = useNavigate();
-
   const navLinks = useMemo(
     () => [
       { name: "Home", href: "/" },
@@ -15,14 +13,14 @@ const Navbar = () => {
   );
 
   return (
-    <div className="flex justify-between px-8 py-6 absolute z-10 w-full pt-4 md:px-36">
+    <div className="flex justify-between px-8 py-6 absolute z-10 w-full pt-4 md:px-36 items-center">
       <div>
-        <img src="/src/assets/imdb.svg" alt="" />
+        <img src="/public/imdb.svg" alt="Icon" className="w-14 100%" />
       </div>
       <div className="flex gap-4">
         {navLinks.map((link, key) => (
           <NavLink key={key} to={link.href}>
-            {link.name}
+            <div className="bg-[#292524] px-2 py-1 rounded-md">{link.name}</div>
           </NavLink>
         ))}
       </div>
@@ -36,7 +34,9 @@ const Navbar = () => {
           style={{ color: "white", backgroundColor: "inherit" }}
         />
       </div> */}
-      <UserOutlined />
+      <div className="bg-[#292524] px-2 py-1 rounded-md">
+        <UserOutlined />
+      </div>
     </div>
   );
 };

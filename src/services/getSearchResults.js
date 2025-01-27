@@ -1,8 +1,6 @@
 import axios from "axios";
 
 export const getSearchResults = async (query, pageNo) => {
-  console.log(pageNo, "page");
-
   const apiKey = "927d2b08";
   let searchQuery = query
     ? `https://www.omdbapi.com/?${query}&page=${pageNo}&apikey=${apiKey}`
